@@ -1,0 +1,276 @@
+{-
+include("SuperDirt");
+SuperDirt.start;
+s.options.device = "External Headphones";
+-}
+
+
+--------------------------------------------------------------------------------
+-- acoustic and almost-acoustic (midrange) pitch sounds
+--------------------------------------------------------------------------------
+
+--
+-- sax : long, slow blows --
+--
+-- TODO: figure out how to slice into these, they are way too long
+--
+do
+  setcps 0.01
+  d1 $ fastcat
+    [ "sax:6 sax:8 sax:12 sax:10 "
+    , "sax:14 sax:16 sax:18 sax:20"
+    , "sax:0 sax:3 sax:2 sax:5"
+    , "sax:7 sax:9 sax:13 sax:11"
+    , "sax:15 sax:17 sax:19 sax:21"
+    , "sax:1 sax:4"
+    ]
+
+--
+-- arp : seems to be an orchestra, arp:0 is very low and arp:1 is midrange --
+--
+do
+  setcps 0.5
+  d1 $ "arp:0 arp:1"
+
+
+-- tink: a bell- or triangle-like sound; a bit like chimes played fast
+do
+  setcps 1
+  d1 $ n (run 4) |+| n 1 # s "tink"
+
+
+--------------------------------------------------------------------------------
+-- electronic midrange pitched sounds
+--------------------------------------------------------------------------------
+
+--
+-- notes: pretty close to just a sin wave, electric piano sound --
+--
+-- 'newnotes' seems to be the same thing(?)
+do
+  setcps 1
+  d1 $ n (run 2) # s "notes"
+  d1 $ n (run 6) |+| n 8 # s "notes" -- 8 thru 14
+  d1 $ n (run 5) |+| n 2 # s "notes" -- 2 thru 7
+
+--
+-- blip: kind of a video game sound, just two pitches
+--    ... it actually works okay as a bass sound if you slow it down
+do
+  setcps 1
+  d1 "blip:0 blip:1"
+
+--
+--
+-- arpy: kind of a crappy sounding fake electric guitar --
+-- ... but it can sound pretty cool after layering effects
+--
+do
+  setcps 1
+  d1 $ n (run 11) # s "arpy"
+
+-- latibro: hard to explain, kind of like electric accordion --
+--
+do
+  setcps 0.5
+  d1 $ n (run 8) # s "latibro"
+
+--------------------------------------------------------------------------------
+-- acoustic and almost-acoustic bass sounds
+--------------------------------------------------------------------------------
+
+--
+-- pluck: a plucked string bass (sounds a bit harp-like at the top) --
+--
+-- TODO: make a midi-like version of this
+do
+  setcps 0.2
+  d1 $ fastcat
+    [ n "9 11 14 1" # s "pluck"
+    , n "7 10 15 13" # s "pluck"
+    , n "0 5 6 12" # s "pluck"
+    , n "16 2 4 8" # s "pluck"
+    ]
+
+--
+-- wobble: a bit like a double-tap on an electric bass. Just 1 sample --
+--    ... this is probably a good sound for ear training exercises
+--
+do
+  setcps 0.5
+  d1 $ up "5 9 12 17" # "wobble:0"
+
+-- bass3: basically an electric bass sound, has two different pitches
+--        and a variety of tones
+do
+  setcps 0.1
+  d1 $ fastcat
+    -- same note, different tone. All of these sound like an electric bass guitar
+    [ s "[bd     bass3:1 bass3:2 bass3:3 bass3:4]!2"
+    -- same tone, different notes... this one sounds the most acoustic
+    , s "[sn:1   bass3:6 bass3:0]!2"
+    -- crazier sounds, don't really seem like same instrument at all
+    , s "[hh     bass3:7 bass3:8 bass3:10]!2"
+    ]
+
+--
+-- jvbass : an electronic bass, still relatively musical
+--
+do
+  setcps 0.8
+  d1 $ n (run 13) # s "jvbass"  -- `run n` ends at `n - 1`, jvbass:12
+
+--------------------------------------------------------------------------------
+-- electro-bass sounds
+--------------------------------------------------------------------------------
+
+--
+-- bass: all samples are same pitch, starts as almost like a fuzzed
+--       electric bass and gets more and more digital "ring" sound
+--
+do
+  setcps 1
+  d1 "bass:0 bass:1 bass:2 bass:3"
+
+-- bass1: mostly the same note, with wildly varying sounds
+--        many of the sounds are very dramatic, some muted and some ring a ton
+do
+  setcps 0.1
+  d1 $ n (run 20) # "bass1"
+
+-- bass2: very electric sound, but I actually like it pretty well
+do
+  setcps 0.4
+  d1 $ n (run 5) # "bass2"
+
+-- jungbass has a bunch of pretty different sounds, some are super
+-- electronic and fancy, some sound almost like a simple electric bass guitar
+do
+  setcps 0.05
+  d1 $ n (run 15) # "jungbass"
+
+-- stab is somewhere between a bass and an electro-percussion sound
+do
+  setcps 0.3
+  d1 $ n (run 18) |+| 0 # s "stab"
+
+
+-- kurt: mostly some voiced notes, also a couple weird sounds
+--
+do
+  setcps 1
+  -- weird vocal sound
+  d1 $ fastcat
+    [ "kurt:0"
+    -- couple of nonsense words at same pitch; might make for cool vocal effects
+    , n (run 3) |+| n 1 # s "kurt"
+    -- other sounds... unlikely to be useful
+    , n (run 3) |+| n 4 # s "kurt"
+    ]
+
+--------------------------------------------------------------------------------
+-- recordings of drumsets
+--------------------------------------------------------------------------------
+
+-- feel has kind of two sounds, a bassy drum and a garbage can type sound
+do
+  setcps 0.7
+  d1 $ n (run 8) |+| 0 # s "feel"
+
+-- drum is a mix of samples from a breakbeat-style recording
+do
+  setcps 1.2
+  d1 $ n (run 5) |+| 0 # s "drum"
+
+-- drumtraks seems like recording of relatively clean hits on a traditional
+-- drumkit
+do
+  setcps 0.3
+  d1 $ n (run 13) |+| 0 # s "drumtraks"
+
+-- similarly, odx seems like a breakbeat-style thing too
+do
+  setcps 0.3
+  d1 $ n (run 15) |+| 0 # s "odx"
+
+-- future is a mix of pretty acoustic sounds
+do
+  setcps 0.4
+  d1 $ n (run 18) |+| 0 # s "future"
+
+--------------------------------------------------------------------------------
+-- parts of a drumset
+--------------------------------------------------------------------------------
+
+
+-- bd is mostly pretty fixed, but some have a bit of "ring" in them
+do
+  setcps 0.6
+  d1 $ n (run 5) |+| 0 # s "bd"
+
+-- sn has a fair amount of varition
+--    I actually think some of the non-snare drums got put in this folder
+do
+  setcps 0.07
+  d1 $ n (run 50) |+| 0 # s "sn"
+
+-- hh is mostly various hh sounds
+--    I think a couple of cymbal crashes got in here
+--    There are also two electro sounds (one of them a turntable) in here
+do
+  setcps 0.3
+  d1 $ n (run 13) |+| 0 # s "hh"
+
+
+-- ht is a ton of duplicated sounds, seems to be pitched drums
+do
+  setcps 0.4
+  d1 $ n (run 20) |+| 0 # s "ht"
+
+-- lt: semi-pitched drum sound. Has a ton of duplicate samples(?)
+do
+  setcps 0.3
+  d1 $ n (run 24) # s "lt"
+
+--------------------------------------------------------------------------------
+-- high-quality non-drumset acoustic percussion sounds
+--------------------------------------------------------------------------------
+
+-- cp is pretty consistent, although some of them ring more
+do
+  setcps 0.5
+  d1 $ n (run 15) |+| 0 # s "cp"
+
+-- tabla sounds are quite varied
+do
+  setcps 0.2
+  d1 $ n (run 15) |+| 0 # s "tabla"
+
+-- can is pretty consistent, different pitches and amounts of ring
+do
+  setcps 0.5
+  d1 $ n (run 30) |+| 0 # s "can"
+
+-- mouth has a ton of voiced drum sounds
+do
+  setcps 0.4
+  d1 $ n (run 18) |+| 0 # s "mouth"
+
+--------------------------------------------------------------------------------
+-- electro-percussion sounds (some of them carry pitch, esp bass sound)
+--------------------------------------------------------------------------------
+
+-- gabba is a variety of very synth drum sounds, from bass to midrange
+do
+  setcps 0.8
+  d1 $ n (run 4) |+| 0 # s "gabba"
+
+-- sid: a mix of percussion and electro-bass sounds
+do
+  setcps 0.15
+  d1 $ n (run 24) # s "sid"
+
+-- psr: a mix of percussion and high-pitched electronic sounds
+do
+  setcps 0.1
+  d1 $ n (run 30) # s "psr"

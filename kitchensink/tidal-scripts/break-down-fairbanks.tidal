@@ -1,0 +1,124 @@
+{-
+include("SuperDirt");
+SuperDirt.start;
+s.options.device = "External Headphones";
+-}
+
+
+-- This is a simple snippet from
+-- http://ericfairbanks.org/music/tidal/code/2017/06/05/tidal-tutorial-part-2.html
+-- illustrating how to use a do block and code to organize patterns.
+do
+  hush
+  let tempoToCyclesPerSecond tempo = tempo/120
+  setcps $ tempoToCyclesPerSecond 130
+  let bassDrum = s "[bd bd]"
+  let bassLine = s "[bass:3*4]"
+  let percussion = s "[[~ sn:3], [~ hh]*2]"
+  let mainLoop = stack [bassDrum, bassLine, percussion]
+  d1 $ mainLoop # gain 0.8
+
+
+-- Here's a groove from Erik Fairbanks' blog that I want to break down. The
+-- original was set to 2 cps; sometimes slowing it helps you hear.
+-- http://ericfairbanks.org/2017/07/11/tidal-tutorial-part-3.html
+--
+-- This one took me a really long time to really be able to hear the full
+-- musical cycle, so I want to break it down in great detail.
+--
+-- How to understand the cycle?
+-- - the bd/sn/hh rhythm pretty clearly outlines a 4:4 rhythm in my mind,
+--   so a cycle is a quarter note
+-- - each of the slow-4 units in the up clause is 1 beat, so the harmony
+--   changes every beat and repeats every measure
+-- - each of the 12-subunit, slow-3 bass cycles is 12 16th notes, or 3 beats.
+--   but because of the cycling of these, a full cycle of the rhythm takes 9
+--   beats.
+-- - As a result, a full cycle of the harmony + rhythm takes LCM(9, 4) = 36
+--   beats, or 9 measures
+--
+-- The simpler patterns I look at when I'm breaking this down repeat every
+-- 3 beats, and as a result if you overlay them with a 4:4 measure they
+-- repeat every 3 measures, which is the more basic situation for this
+-- 12-subunit-as-16th-note overlay; the 9 measures is just because we're
+-- doing a cycle of 3 rhythms.
+do
+  hush
+  setcps 2
+  let rhythm = s "[bd, <~ sn:3>, [~ hh]]" # gain 1.25
+  let bass = s (slow 3 "bass:3(<7 5 6>*2,12)") # up (slow 4 "0 1 2 3")
+  let fatten p = p |*| up "[0,7,12,19]" |*| gain "0.85"
+  d1 $ stack [rhythm, fatten $ bass]
+
+
+-- Here's the drum groove by itself
+do
+  setcps 2
+  -- Here's our basic beat: I think of it as a quarter note per cycle
+  d1 $ silence
+  d2 $ "[bd, <~ sn:1>, [~ hh]]"
+
+-- Here are the three underlying Euclidean cycles overlayed as 3 beats of
+-- 16th notes
+--
+-- Here's the base (6,12) rhythm, which is really just a straight-8th-note feel
+d1 $ slow 3 $ s "<bass:1>(6,12)"
+-- Here's the looped (5, 12) rhythm, which is syncopated
+d1 $ slow 3 $ s "<bass:1>(5,12)"
+-- A denser syncopation with (7, 12)
+d1 $ slow 3 $ s "<bass:1>(7,12)"
+--
+-- The same 3 basic patterns, but with alternating bass sounds so that you
+-- can hear the 9-measure pattern that comes out
+d1 $ slow 3 $ s "<bass:1 bass:2 bass:3>(6,12)"
+d1 $ slow 3 $ s "<bass:1 bass:2 bass:3>(5,12)"
+d1 $ slow 3 $ s "<bass:1 bass:2 bass:3>(7,12)"
+
+-- Recall that <...>*2 causes us to switch between two different Euclidean breaks
+-- halfway through the 12-note unit cycle. The sample winds up using 3 different
+-- variants of this, <5 6> then <7 5> then <6 7>.
+--
+-- Here's what each of these sounds like looped by itself
+d1 $ slow 3 $ s "<bass:1>(<5 6>*2,12)"
+d1 $ slow 3 $ s "<bass:1>(<7 5>*2,12)"
+d1 $ slow 3 $ s "<bass:1>(<6 7>*2,12)"
+-- And once again by varying the bass sound, you can see the 9-measure versions
+-- of these patterns that happen when we start mixing them.
+d1 $ slow 3 $ s "<bass:1 bass:2 bass:3>(<5 6>*2,12)"
+d1 $ slow 3 $ s "<bass:1 bass:2 bass:3>(<6 7>*2,12)"
+d1 $ slow 3 $ s "<bass:1 bass:2 bass:3>(<6 5>*2,12)"
+d1 $ slow 3 $ s "<bass:1 bass:2 bass:3>(<7 6>*2,12)"
+d1 $ slow 3 $ s "<bass:1 bass:2 bass:3>(<7 5>*2,12)"
+--
+-- I also like the <7 6> version of this, even though it isn't actually in the
+-- sample
+d1 $ slow 3 $ s "<bass:1>(<7 6>*2,12)"
+
+
+-- When we actually glue them together, this is what we get. Note that even
+-- before we cycle the bass tone, this is already a 9-measure pattern.
+d1 $ slow 3 $ s "<bass:1>(<5 6 7>*2,12)"
+d1 $ slow 3 $ s "<bass:1 bass:2 bass:3>(<5 6 7>*2,12)"
+
+
+
+-- Two more of Fairbanks' blog creations. I still can't quite understand
+-- what's going on here, and especially why they come out so different.
+-- /shrug
+
+do
+  hush
+  setcps 1.0
+  let progression p = p |*| up (slow 8 $ "0 5 10 7")
+  let melody = progression $ stut 4 0.3 1.033 $ fast 2 $ up "0 3 7 10" |*| up "12" # s "pluck"
+  let bass = progression $ s "pluck" |*| speed "0.5" |*| gain "1.0" # shape 0.6 # cut "-1"
+  d1 $ stack [melody, bass]
+
+
+do
+  hush
+  setcps 1.0
+  let progression p = p |+| n (slow 8 $ "0 5 10 7")
+  let melody = progression $ stut 4 0.3 1.033 $ fast 2 $ note "0 3 7 10" |+| note "12" # s "supercomparator"
+  let bass = progression $ s "supercomparator" |*| speed "0.5" |*| gain "1.0" # shape 0.6 # cut "-1"
+  d1 $ stack [melody, bass]

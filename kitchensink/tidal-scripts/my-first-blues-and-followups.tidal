@@ -1,0 +1,77 @@
+{-
+include("SuperDirt");
+SuperDirt.start;
+s.options.device = "External Headphones";
+-}
+
+
+-- Here's a very early attempt I made to do some more involved programming; it's
+-- a simple shuffled boogie bass on a 12-bar blues.
+--
+-- I actually use string manipulation to do some of the work here; this is crude
+-- but does work, except that you have to call parseBP_E manually (with
+-- string literals, TemplateHaskell winds up calling this for you implicitly)
+
+import Data.List
+
+do
+  hush
+  let
+    bpm = 200.0
+    beatsperblues = 12.0 * 4
+    cps = bpm / 60.0 / beatsperblues
+  setcps cps
+  let
+    drumline = stack [ s "[bd bd]" , s "[~ [sn:3 sn:3?]]" , s "[~ [hh hh?] ~ hh]]" ] # gain 0.8
+  d1 $ fastcat $ Prelude.take 12 $ repeat drumline
+  let
+    bassoffsets = [0, 7, 12, 7]
+    walked8ths note = "[" ++ show note ++ " ~ " ++ show note ++ "]"
+    basslinestr root = intercalate " " $ map (walked8ths . (+root)) bassoffsets
+    basslinepat = parseBP_E . basslinestr
+    basslinemidi = midinote . basslinepat
+    bassline root = (basslinemidi root) # s "tutorial4" # gain 1.0
+  d2 $ fastcat $ map bassline
+    [ 31, 36, 31, 31
+    , 36, 36, 31, 31
+    , 38, 36, 31, 38]
+
+----------------------------------------------------------------------------
+-- That worked but was gross. The rest of this script is dedicated to exploring
+-- functions that could make this kind of thing easier
+----------------------------------------------------------------------------
+
+-- One option might be overlaying things using <> patterns.
+--
+-- Another, more code-oriented option is using `every` to cause specific
+-- effects on specific cycles.
+--
+-- whenmod doesn't do what you'd think; it applies when the mod is >=, not ==.
+-- But it's easy to make our own little `whenmodIs` function and use that!
+--
+-- A final option is `whenModIs`
+do
+  let
+    whenmodIs :: Int -> Int -> (Pattern a -> Pattern a) -> Pattern a -> Pattern a
+    whenmodIs a b = Sound.Tidal.Core.when (\t -> (t `mod` a) == b )
+  hush
+  setcps 2
+  d1 $ s "cp <hh*2 hh ~>" -- the hh pattern repeats every 3 cycles
+  d2 $ every 2 (\_ -> s "bd") $ s "sn:1" -- the bd and sn alternate
+  d3 $ every 4 (\_ -> s "arpy:0") $ s "~"  -- the arpy:0 plays cycle 0
+  d5 $ whenmodIs 4 1 (\_ -> s "arpy:2") $ s "~"  -- the arpy:2 plays cycle 1
+  d4 $ whenmod 4 2 (\_ -> s "arpy:3") $ s "~"  -- the arpy:2 plays cycles 2 and 3
+
+-- sew is a more concise method than every for the specific case where you
+-- want to combine just 2 options. It takes a `Pattern Bool` (which you can
+-- string-encode using t/f) to select from one of 2 options.
+--
+-- You could almost certainly implement a genralization of `sew`, maybe called
+-- `chooseFrom` or something, that would take a pattern of ints; you could
+-- further generalize to a pattern of strings that point into a Hashmap or
+-- something so that you could name each sub-pattern, but you'd have to learn
+-- a bunch of tidal innards to do this!
+do
+  hush
+  setcps 2
+  d1 $ sew (slow 2 $ "t f") (s "bd bd") (s "sn sn")

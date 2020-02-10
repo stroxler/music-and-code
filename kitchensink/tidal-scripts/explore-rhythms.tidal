@@ -1,0 +1,169 @@
+{-
+include("SuperDirt");
+SuperDirt.start;
+s.options.device = "External Headphones";
+-}
+
+
+------------------------------------------------------------------------
+-- Demonstrating the basic rhythmic syntax elements (except Euclidean)
+------------------------------------------------------------------------
+
+-- all of the basic pure rhythm that applies to a single cycle
+do
+  hush
+  setcps (1 / 6)
+  d1 $ fastcat
+    [ s "bd bd bd"  -- evenly spaced
+    , s "sn!3"      -- shorthand for sn sn sn
+    , n "c c d" # s "superhammond"  -- evenly spaced
+    , n "c _ d" # s "superhammond"  -- hold the first 3 for 2 beats
+    , n "c@2 d" # s "superhammond"  -- shorthand for c _
+    , n "[c c] d e" # s "superhammond"  -- the brackets are worth one unit
+    , n "c*2 d e" # s "superhammond"    -- shorthand for [c c]
+    ,
+    ]
+
+do
+  hush
+  setcps 0.05
+  d1 $ fastcat
+    -- using square brackets means the harmony parts are spaced out
+    -- to take up the same unit of time (e.g. here we get triplet on doublet)
+    [ s "[sn:1 sn sn:1 sn, hh:0 hh:7 hh:8, bd]*6"
+    -- using curly brackets means that we'll force them to have the same subunit
+    -- spacing, by looping all but the longest pattern.
+    , s "{sn:1 sn sn:1 sn, hh:0 hh:7 hh:8}*6"
+    ]
+
+
+-- the %n notation is the equivalent of lining up `n` ~'s as an entry in
+-- curly braces - it will loop whatever you have over `n` subunits. So here
+-- we get a triplet.
+do
+  hush
+  setcps 1.0
+  d1 $ stack
+    [ n "{c d e}%4" # s "superhammond"
+    , s "bd"
+    ]
+
+-- fancier syntax that (potentially) can span across cycles
+do
+  hush
+  setcps (0.4)
+  d1 $ stack
+    -- / spreads out in time, like the `slow` function.
+    -- It can span cycles; here we're using it to span 2 cycles
+    [ n "[c3 g3]/2" # s "tutorial4" # sustain 2.0
+    -- you can use <> inside any other syntax element, it alternates
+    , n "c e <g f> <f g>" # s "superhammond"
+    ]
+
+------------------------------------------------------------------------
+-- Simple rock-type drum grooves
+------------------------------------------------------------------------
+
+-- Very basic pattern; depending on context it will either be a
+-- driving quarter-note pattern, or a laid back 1-and-3
+do
+  hush
+  setcps 1
+  d1 $ s "[bd:1, ~ sn:1]"
+
+-- same but with kick every beat
+do
+  hush
+  setcps 1
+  d1 $ s "[bd:1*2, ~ sn:1]"
+
+-- Add the high hat to the basic pattern
+do
+  hush
+  setcps 1
+  d1 $ s "[bd:1, hh*4, ~ sn:1]"
+
+-- Same basic idea, but with kicks on both 1 and 3
+do
+  hush
+  setcps 1
+  d1 $ s "[bd:1*2, hh*4, ~ sn:1]"
+
+-- Similar groove, but add some variation across measures
+-- on beat 3
+do
+  hush
+  setcps 1
+  d1 $ s "[bd:1*2, hh*4, ~ [<sn:1 sn:4>]]"
+
+-- Same groove using different samples
+do
+  hush
+  setcps 1
+  d1 $ s "[drum:0*2, drum:2*4, ~ <drum:1 drumtraks:4>]"
+
+
+-- Similar groove to the first one, but using a double-kick
+do
+  hush
+  setcps 1
+  d1 $ s "[bd:1*<1 2> ~, hh*4, ~ sn:1]"
+
+------------------------------------------------------------------------
+-- Euclidean rhythms
+------------------------------------------------------------------------
+
+-- The euclidean rhythms (n, m) try to spread n strikes as evenly as
+-- possible across m beats. When there's a tie for where to put the strike,
+-- they go with an earlier strike (you can here this most clearly in
+-- something simple like (3, 4), where it picks beats 0, 1, and 2).
+--
+-- You can rotate a euclidean rhythm, shifting the 0th beat to be the
+-- `n`th beat of the original (for zero-indexed `n`) by adding a third
+-- parameter. Again this is easy to hear with (3, 4, 2), where now it will
+-- strike on beats 0, 2, and 3
+
+-- I'll do 2 sections demoing them:
+-- - one on basic triplet-oriented rock grooves
+-- - one on some 1- and 2-measure latin rhythms
+
+do
+  hush
+  setcps 1.0
+
+-- Some simple rhythms, syncopated using 12-subunit Euclidean patterns
+--
+-- The way I'm laying them out here they make a 6:8 type rhythm, but by
+-- doing a 3 vs 4 overlay you can produce 4:4 rhythms, which is what the Erik
+-- Fairbanks blog I break down later is doing.
+d1 $ slow 2 $ "[bass:1(6, 12), bd:1 sn:1]" -- basic beat, same as bass*6
+d1 $ slow 2 $ "[bass:1(5, 12), bd:1 sn:1]" -- "sparse" syncopation of the 6:4 beat
+d1 $ slow 2 $ "[bass:1(7, 12), bd:1 sn:1]" -- "dense" syncopation of the 6:4 beat
+--
+-- If you mix <> with * in the context of Euclidean rhythms, it will switch
+-- between various `n` values as it goes through the pattern of `m` notes.
+--
+d1 $ slow 2 $ "[bass:1(<7 6>*2, 12), bd:1 sn:1]" -- variant on the dense rhythm
+d1 $ slow 2 $ "[bass:1(<5 6>*2, 12), bd:1 sn:1]" -- in-between rhythm, 6 beats
+d1 $ slow 2 $ "[bass:1(<6 5>*2, 12), bd:1 sn:1]" -- variant on the sparse rhythm
+
+-- Cumbia from Colombia and Calypso from Trinidad
+d1 $ "[cp(3,4), bd]"
+d1 $ "[cp(3,4,2), bd]" -- rotated variant, to help make clear what rotations do
+
+-- Latin-style 8th note rhythms:
+-- - 8-subunit ones are sometimes single-measure, sometimes double-measure
+-- - 16-subunit ones are double-measure
+
+-- Cuban tresillo
+d1 $ "[cp(3,8), <bd sn>]"
+-- Cuban cinquillo
+d1 $ slow 2 $ "[cp(5,8), bd sn]" -- slow version (quarter-note pattern, 5 hits)
+d1 $ "[cp(5,8), <bd sn>]"          -- fast version (10 hits per 2 measures)
+-- Brazilian Bossa-Nova necklace   (necklace means it's common to rotate this)
+d1 $ slow 2 $ "[cp(5, 16), bd sn]" -- also feels a bit like salsa
+-- Brazilian Samba necklace
+d1 $ slow 2 $ "[cp(7, 16, 14), bd sn]"
+-- More latin-sounding 16-unit patterns
+d1 $ slow 2 $ "[cp(7, 16), bd sn]"  -- the un-rotated version of samba
+d1 $ slow 2 $ "[cp(9, 16), bd sn]"  -- feels a little like a dense salse groove

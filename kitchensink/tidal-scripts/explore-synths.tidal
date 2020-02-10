@@ -1,0 +1,117 @@
+{-
+include("SuperDirt");
+SuperDirt.start;
+s.options.device = "External Headphones";
+-}
+
+
+-- For some reason |+| doesn't seem to work on midinote, I'm not sure
+-- why; I find this super annoying.
+
+--------------------------------------------------------------------------------
+-- acoustic-sounding synths
+--------------------------------------------------------------------------------
+
+-- I'm missing this one on my computer for some reason, which is a bummer :(
+do
+  setcps 0.4
+  d1 $ midinote "42 49 54 61 66 73 78 85 90" # s "superpiano"
+
+-- mandolin sounds pretty bad by itself but can be made musical
+do
+  setcps 0.4
+  d1 $ midinote "42 49 54 61 66 73 78 85 90" # s "supermandolin"
+
+-- hammond sound is solid!
+do
+  setcps 0.4
+  d1 $ midinote "30 37 42 49 54 61 66 73 78" # s "superhammond"
+
+-- vibe sound is solid!
+do
+  setcps 0.4
+  d1 $ midinote "30 37 42 49 54 61 66 73 78" # s "supervibe"
+
+-- tutorial3 is kind of a sine wave, actually sounds decent as a ringing bass
+do
+  setcps 0.4
+  d1 $ midinote "30 37 42 49 54 61 66 73 78" # s "tutorial3"
+
+-- tutorial4 is more muted, works as both a fake bass and a bell-like sound
+do
+  setcps 0.4
+  d1 $ midinote "30 37 42 49 54 61 66 73 78" # s "tutorial4"
+
+-- this one sounds a bit flute-like I guess?
+do
+  setcps 0.4
+  d1 $ midinote "30 37 42 49 54 61 66 73 78" # s "gabor"
+
+--------------------------------------------------------------------------------
+-- electronic-sounding synths that seem useful
+--------------------------------------------------------------------------------
+
+-- I'm missing this one on my computer unfortunately
+do
+  setcps 0.4
+  d1 $ midinote "30 37 42 49 54 61 66 73 78" # s "supersquare"
+
+do
+  setcps 0.4
+  d1 $ midinote "30 37 42 49 54 61 66 73 78" # s "supertron"
+
+do
+  setcps 0.4
+  d1 $ midinote "30 37 42 49 54 61 66 73 78" # s "supergrind"
+
+do
+  setcps 0.4
+  d1 $ midinote "30 37 42 49 54 61 66 73 78" # s "superreese"
+
+do
+  setcps 0.4
+  d1 $ midinote "30 37 42 49 54 61 66 73 78" # s "supercomparator"
+
+do
+  setcps 0.4
+  d1 $ midinote "30 37 42 49 54 61 66 73 78" # s "superzow"
+
+do
+  setcps 0.4
+  d1 $ midinote "30 37 42 49 54 61 66" # s "supersiren"
+
+--------------------------------------------------------------------------------
+-- synth percussion
+--------------------------------------------------------------------------------
+
+do
+  setcps 0.5
+  d1 $ n "0 1 2 3 4 5 6 7" # s "superhat"
+
+do
+  setcps 0.5
+  d1 $ n "0 1 2 3 4 5 6 7" # s "supersnare"
+
+do
+  setcps 0.5
+  d1 $ n "0 1 2 3 4 5 6 7" # s "super808" -- this one starts to become electro
+
+do
+  setcps 1
+  d1 $ n "0 1 2 3" # s "superkick" # gain 1.5  -- rather quiet... bd likely better
+
+--------------------------------------------------------------------------------
+-- slightly silly electro sounds that I probably won't use much
+--------------------------------------------------------------------------------
+
+do
+  setcps 0.4
+  d1 $ midinote "30 37 42 49 54 61 66" # s "psin"
+
+do
+  setcps 0.4
+  d1 $ midinote "30 37 42 49 54 61 66" # s "imp"
+
+do
+  setcps 0.4
+  d1 $ midinote "30 37 42 49 54 61 66" # s "supergong"
