@@ -136,16 +136,16 @@ do
 -- The way I'm laying them out here they make a 6:8 type rhythm, but by
 -- doing a 3 vs 4 overlay you can produce 4:4 rhythms, which is what the Erik
 -- Fairbanks blog I break down later is doing.
-d1 $ slow 2 $ "[bass:1(6, 12), bd:1 sn:1]" -- basic beat, same as bass*6
-d1 $ slow 2 $ "[bass:1(5, 12), bd:1 sn:1]" -- "sparse" syncopation of the 6:4 beat
-d1 $ slow 2 $ "[bass:1(7, 12), bd:1 sn:1]" -- "dense" syncopation of the 6:4 beat
+d1 $ slow 2 $ "[bass(6, 12), bd:1 sn:1]" -- basic beat, same as bass*6
+d1 $ slow 2 $ "[bass(5, 12), bd:1 sn:1]" -- "sparse" syncopation of the 6:4 beat
+d1 $ slow 2 $ "[bass(7, 12), bd:1 sn:1]" -- "dense" syncopation of the 6:4 beat
 --
 -- If you mix <> with * in the context of Euclidean rhythms, it will switch
 -- between various `n` values as it goes through the pattern of `m` notes.
 --
-d1 $ slow 2 $ "[bass:1(<7 6>*2, 12), bd:1 sn:1]" -- variant on the dense rhythm
-d1 $ slow 2 $ "[bass:1(<5 6>*2, 12), bd:1 sn:1]" -- in-between rhythm, 6 beats
-d1 $ slow 2 $ "[bass:1(<6 5>*2, 12), bd:1 sn:1]" -- variant on the sparse rhythm
+d1 $ slow 2 $ "[bass(<7 6>*2, 12), bd:1 sn:1]" -- variant on the dense rhythm
+d1 $ slow 2 $ "[bass(<5 6>*2, 12), bd:1 sn:1]" -- in-between rhythm, 6 beats
+d1 $ slow 2 $ "[bass(<6 5>*2, 12), bd:1 sn:1]" -- variant on the sparse rhythm
 
 -- Cumbia from Colombia and Calypso from Trinidad
 d1 $ "[cp(3,4), bd]"

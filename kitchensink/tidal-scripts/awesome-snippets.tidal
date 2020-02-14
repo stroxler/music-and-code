@@ -1,0 +1,15 @@
+-- Here's an awesome lick ripped from Mike Hodnick (he uses it in his official
+-- tidal video intros!)
+--
+-- See https://youtu.be/3dzSX61ZPGQ?t=1082
+
+do
+  hush
+  setcps 0.6
+  d1 $ every 3 (rev)
+     $ density 2
+     $ every 2 (|+| note "12")
+     $ (|+| note "-8")
+     $ note "0 4 7 11 12 16 19 23"
+     # s "supersquare"
+     # sustain 0.20
